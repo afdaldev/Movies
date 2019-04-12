@@ -1,5 +1,8 @@
 package com.example.movies.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
@@ -93,7 +96,7 @@ public class Movie {
         }
     }
 
-    public static class ResultsBean {
+    public static class ResultsBean implements Parcelable {
         /**
          * vote_count : 617
          * id : 287947
@@ -139,6 +142,56 @@ public class Movie {
         private String releaseDate;
         @SerializedName("genre_ids")
         private List<Integer> genreIds;
+
+        protected ResultsBean(Parcel in) {
+            voteCount = in.readInt();
+            id = in.readInt();
+            video = in.readByte() != 0;
+            voteAverage = in.readDouble();
+            title = in.readString();
+            popularity = in.readDouble();
+            posterPath = in.readString();
+            originalLanguage = in.readString();
+            originalTitle = in.readString();
+            backdropPath = in.readString();
+            adult = in.readByte() != 0;
+            overview = in.readString();
+            releaseDate = in.readString();
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeInt(voteCount);
+            dest.writeInt(id);
+            dest.writeByte((byte) (video ? 1 : 0));
+            dest.writeDouble(voteAverage);
+            dest.writeString(title);
+            dest.writeDouble(popularity);
+            dest.writeString(posterPath);
+            dest.writeString(originalLanguage);
+            dest.writeString(originalTitle);
+            dest.writeString(backdropPath);
+            dest.writeByte((byte) (adult ? 1 : 0));
+            dest.writeString(overview);
+            dest.writeString(releaseDate);
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        public static final Creator<ResultsBean> CREATOR = new Creator<ResultsBean>() {
+            @Override
+            public ResultsBean createFromParcel(Parcel in) {
+                return new ResultsBean(in);
+            }
+
+            @Override
+            public ResultsBean[] newArray(int size) {
+                return new ResultsBean[size];
+            }
+        };
 
         public int getVoteCount() {
             return voteCount;
